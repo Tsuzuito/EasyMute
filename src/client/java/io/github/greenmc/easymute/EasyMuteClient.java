@@ -15,6 +15,8 @@ public class EasyMuteClient implements ClientModInitializer {
 
 	private static KeyMapping muteKey;
 
+	private static boolean hotkeyWasHeld = false;
+
 	private float savedVolume = 0.5F;
 	private boolean muted;
 
@@ -26,12 +28,19 @@ public class EasyMuteClient implements ClientModInitializer {
 				GLFW.GLFW_KEY_M, KeyMapping.Category.register(Identifier.parse("category.easymute.mod"))));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (muteKey.isDown()) {
-
-				if (!muted) mute(client, client.options);
-				else unmute(client, client.options);
-
+			boolean hotkeyPressed = false;
+			while (muteKey.consumeClick()){
+				hotkeyPressed = true;
 			}
+
+			if(hotkeyPressed && !hotkeyWasHeld){
+				if(!muted){
+					mute(client, client.options);
+				} else {
+					unmute(client, client.options);
+				}
+			}
+			hotkeyWasHeld = muteKey.isDown();
 		});
 	}
 
@@ -57,7 +66,7 @@ public class EasyMuteClient implements ClientModInitializer {
 	}
 
 	private void sendToast(Minecraft client, String desc) {
-		client.getToastManager().addToast(new SystemToast(
+		client.gui.toastManager().addToast(new SystemToast(
 				SystemToast.SystemToastId.NARRATOR_TOGGLE,
 				Component.literal("EasyMute"),
 				Component.translatable(desc)));
