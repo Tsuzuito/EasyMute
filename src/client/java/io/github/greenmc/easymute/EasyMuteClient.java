@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
-import org.lwjgl.glfw.GLFW;
+//import org.lwjgl.glfw.GLFW;
 
 public class EasyMuteClient implements ClientModInitializer {
 
@@ -23,9 +23,11 @@ public class EasyMuteClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		muteKey = KeyMappingHelper.registerKeyMapping(
-				new KeyMapping("key.easymute.mute",
-				InputConstants.Type.KEYSYM,
-				GLFW.GLFW_KEY_M, KeyMapping.Category.register(Identifier.parse("category.easymute.mod"))));
+				new KeyMapping(
+						"key.easymute.mute",
+						InputConstants.KEY_G,
+						KeyMapping.Category.register(Identifier.fromNamespaceAndPath("easymute", "main")))
+		);
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			boolean hotkeyPressed = false;
